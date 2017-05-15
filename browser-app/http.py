@@ -1,8 +1,9 @@
-import re
+import re, os
 from flask import Flask, request, render_template
 
 app = Flask(__name__)
 
+HOST_IP = os.environ['HOST_IP']
 
 @app.route('/')
 def index():
@@ -31,5 +32,5 @@ def convert_xor():
 
 
 if __name__ == "__main__":
-    app.run(host="192.168.0.121",
+    app.run(host=HOST_IP,
             threaded=True)
