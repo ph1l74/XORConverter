@@ -1,4 +1,4 @@
-import re, os
+import os
 from flask import Flask, request, render_template
 
 app = Flask(__name__)
@@ -12,20 +12,29 @@ def index():
 
 @app.route('/', methods=['POST'])
 def convert_xor():
-    text = request.form['text']
-    list = re.split(' ', text)
-    i = 0
-    result = "00"
+    entered_text = request.form['text']
+
+    # Start byte to compare with
+    result = int('00', 16)
+
+    # Empty result string
     result_string = ""
-    while i < len(list):
-        result = hex(int(list[i], 16) ^ int(result, 16))
+
+    for i, element in enumerate(entered_text.split()):
+        # Start XOR comparation
+        result = int(element, 16) ^ result
+        # If first byte then start to fill the result string
         if i == 0:
-            result_string = str(hex(int(list[i], 16)))
+            result_string = "0x" + element
+        # Else: continue to fill the result string
         else:
-            result_string = result_string + " + " + str(hex(int(list[i], 16)))
-        i += 1
-    result = str(result)
+            result_string = result_string + " + 0x" + element
+
+    # Convert result string to hexdecimal view
+    result = "%X" % result
+    result = str(result).upper()
     result_string = result_string.upper() + " = "
+
     return render_template("index.html",
                            result_string=result_string,
                            result=result)

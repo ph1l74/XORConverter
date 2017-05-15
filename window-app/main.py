@@ -1,5 +1,4 @@
-import re
-import sys
+import sys, re
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -13,19 +12,17 @@ UI.setupUi(MainWindow)
 MainWindow.show()
 QCoreApplication.processEvents()
 
-def convertXOR():
-    text = str(UI.txtEnter.toPlainText())
-    list = re.split(' ', text)
-    i = 0
+
+def convert_xor():
+    entered_text = str(UI.txtEnter.toPlainText())
     result = int('00', 16)
-    while i < len(list):
-        result = int(list[i], 16) ^ result
-        i += 1
+    for i, element in enumerate(entered_text.split()):
+        result = int(element, 16) ^ result
     result = "%X" % result
     result = str(result)
     UI.lvlResult.setText(result)
-    UI.txtEnter.appendPlainText(" = " + result)
+    UI.txtEnter.setPlainText(entered_text + " " + result)
 
-UI.btnConvert.clicked.connect(lambda: convertXOR())
+UI.btnConvert.clicked.connect(lambda: convert_xor())
 
 sys.exit(app.exec_())
