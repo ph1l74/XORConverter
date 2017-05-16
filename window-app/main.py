@@ -18,10 +18,9 @@ def convert_xor():
     result = int('00', 16)
     for i, element in enumerate(entered_text.split()):
         result = int(element, 16) ^ result
-    result = "%X" % result
-    result = str(result)
+    result = "0x{0:X}" .format(result)
     UI.lvlResult.setText(result)
-    UI.txtEnter.setPlainText(entered_text + " " + result)
+    UI.txtEnter.setPlainText("{} {}" .format(entered_text, result))
 
 UI.btnConvert.clicked.connect(lambda: convert_xor())
 
