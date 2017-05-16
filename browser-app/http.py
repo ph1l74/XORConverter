@@ -18,25 +18,28 @@ def convert_xor():
     result = int('00', 16)
 
     # Empty result string
-    result_string = ""
+    package = ""
 
-    for i, element in enumerate(entered_text.split()):
+    for i, hexbyte in enumerate(entered_text.split()):
         # Start XOR comparation
-        result = int(element, 16) ^ result
+        result = int(hexbyte, 16) ^ result
         # If first byte then start to fill the result string
         if i == 0:
-            result_string = "0x" + element
+            package = "0x" + hexbyte
         # Else: continue to fill the result string
         else:
-            result_string = result_string + " + 0x" + element
+            package += " + 0x" + hexbyte.upper()
 
-    # Convert result string to hexdecimal view
-    result = "%X" % result
-    result = str(result).upper()
-    result_string = result_string.upper() + " = "
+    if package:
+        # Convert result string to hexdecimal view
+        result = "0x{0:X}" .format(result)
+        package += " = "
+    else:
+        package = "Enter something in the textbox"
+        result = "No result"
 
     return render_template("index.html",
-                           result_string=result_string,
+                           package=package,
                            result=result)
 
 
