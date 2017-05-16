@@ -1,8 +1,9 @@
-import re
+import os
 from flask import Flask, request, render_template
 
 app = Flask(__name__)
 
+HOST_IP = os.environ['HOST_IP']
 
 @app.route('/')
 def index():
@@ -11,25 +12,37 @@ def index():
 
 @app.route('/', methods=['POST'])
 def convert_xor():
-    text = request.form['text']
-    list = re.split(' ', text)
-    i = 0
-    result = "00"
-    result_string = ""
-    while i < len(list):
-        result = hex(int(list[i], 16) ^ int(result, 16))
+    entered_text = request.form['text']
+
+    # Start byte to compare with
+    result = int('00', 16)
+
+    # Empty result string
+    package = ""
+
+    for i, hexbyte in enumerate(entered_text.split()):
+        # Start XOR comparation
+        result = int(hexbyte, 16) ^ result
+        # If first byte then start to fill the result string
         if i == 0:
-            result_string = str(hex(int(list[i], 16)))
+            package = "0x" + hexbyte
+        # Else: continue to fill the result string
         else:
-            result_string = result_string + " + " + str(hex(int(list[i], 16)))
-        i += 1
-    result = str(result)
-    result_string = result_string.upper() + " = "
+            package += " + 0x" + hexbyte.upper()
+
+    if package:
+        # Convert result string to hexdecimal view
+        result = "0x{0:X}" .format(result)
+        package += " = "
+    else:
+        package = "Enter something in the textbox"
+        result = "No result"
+
     return render_template("index.html",
-                           result_string=result_string,
+                           package=package,
                            result=result)
 
 
 if __name__ == "__main__":
-    app.run(host="192.168.0.121",
+    app.run(host=HOST_IP,
             threaded=True)
